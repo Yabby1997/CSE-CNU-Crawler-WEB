@@ -22,17 +22,20 @@ notice_board = '?mode=list&&articleLimit=10&article.offset='
 
 notice_selector = 'tr > td.b-td-left > div > a'
 
-notice_dict = dict()
 
 
 def fetch_cse_notices(notice_type):
-    j = 0
-    for i in range(3):
+    notice_dict = dict()
+    notice_index = 0
+    for i in range(5):
         offset = 10 * i
         req = requests.get(notice_base + notice_type + notice_board + str(offset))
         html = req.text
         soup = BeautifulSoup(html, 'html.parser')
         notices = soup.select(notice_selector)
+
+        if notices == []:
+            break
 
         for notice in notices:
             notice_post = notice.get('href')
@@ -44,32 +47,40 @@ def fetch_cse_notices(notice_type):
 
             notice_date = soup.find('td', {'class': 'b-no-right', 'colspan': '2'}).text
             notice_title = soup.find('td', {'class': 'b-title-box b-no-right'}).text
-            notice_text = soup.find('pre', {'class': 'pre'}).text
+            notice_text = soup.select('table > tbody > tr > td')
 
-            notice_dict[j] = {
+            notice_dict[notice_index] = {
                 'link' : notice_link,
                 'type' : notice_type,
                 'date' : notice_date,
                 'title': notice_title,
                 'text': notice_text,
             }
-            j += 1
+            notice_index += 1
+    return notice_dict
 
 
-def add_new_items(crawled_items):
-    for key, val in crawled_items.items():
-        if NoticeData.objects.filter(text=val['text']).exists() :
+def add_new_items(crawled_data):
+    new = 0
+    for key, val in crawled_data.items():
+        if NoticeData.objects.filter(link=val['link']).exists() :
             print('[중복] :', val['title'])
         else :
             NoticeData(link=val['link'], type=val['type'], date=val['date'], title=val['title'], text=val['text']).save()
             print('[신규] :', val['title'])
+            new += 1
+    return new
+
+
+def fetch_and_save():
+    normal = fetch_cse_notices(notice_normal)
+    bachelor = fetch_cse_notices(notice_bachelor)
+    project = fetch_cse_notices(notice_project)
+    #job = fetch_cse_notices(notice_job)
+    print('notice data fetched')
+    new_count = add_new_items(normal) + add_new_items(bachelor) + add_new_items(project) # + add_new_items(job)
+    print(new_count, 'new notice data successfully saved!')
 
 
 if __name__=='__main__':
-    #fetch_cse_notices(notice_bachelor)
-    #fetch_cse_notices(notice_normal)
-    fetch_cse_notices(notice_project)
-    #fetch_cse_notices(notice_job)
-    print('data fetched')
-    add_new_items(notice_dict)
-    print('data saved')
+    fetch_and_save()
