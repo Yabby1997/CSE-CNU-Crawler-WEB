@@ -23,13 +23,13 @@ notice_board = '?mode=list&&articleLimit=10&article.offset='
 notice_selector = 'tr > td.b-td-left > div > a'
 
 
-
-def fetch_cse_notices(notice_type):
+def fetch_cse_notices(category):
     notice_dict = dict()
     notice_index = 0
-    for i in range(5):
+
+    for i in range(3):
         offset = 10 * i
-        req = requests.get(notice_base + notice_type + notice_board + str(offset))
+        req = requests.get(notice_base + category + notice_board + str(offset))
         html = req.text
         soup = BeautifulSoup(html, 'html.parser')
         notices = soup.select(notice_selector)
@@ -39,7 +39,7 @@ def fetch_cse_notices(notice_type):
 
         for notice in notices:
             notice_post = notice.get('href')
-            notice_link = notice_base + notice_type + notice_post
+            notice_link = notice_base + category + notice_post
 
             req = requests.get(notice_link)
             html = req.text
@@ -48,11 +48,12 @@ def fetch_cse_notices(notice_type):
             notice_date = soup.find('td', {'class': 'b-no-right', 'colspan': '2'}).text
             notice_title = soup.find('td', {'class': 'b-title-box b-no-right'}).text
             notice_text = soup.select('table > tbody > tr > td')
+            notice_type = soup.find('h3').text
 
             notice_dict[notice_index] = {
-                'link' : notice_link,
-                'type' : notice_type,
-                'date' : notice_date,
+                'link': notice_link,
+                'type': notice_type,
+                'date': notice_date,
                 'title': notice_title,
                 'text': notice_text,
             }
@@ -76,7 +77,6 @@ def fetch_and_save():
     normal = fetch_cse_notices(notice_normal)
     bachelor = fetch_cse_notices(notice_bachelor)
     project = fetch_cse_notices(notice_project)
-    #job = fetch_cse_notices(notice_job)
     print('notice data fetched')
     new_count = add_new_items(normal) + add_new_items(bachelor) + add_new_items(project) # + add_new_items(job)
     print(new_count, 'new notice data successfully saved!')
