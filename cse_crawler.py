@@ -58,6 +58,7 @@ def fetch_cse_notices(category):
                 'text': notice_text,
             }
             notice_index += 1
+
     return notice_dict
 
 
