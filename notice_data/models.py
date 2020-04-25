@@ -6,7 +6,7 @@ class NoticeData(models.Model):
 	type = models.TextField()
 	date = models.TextField()
 	title = models.TextField()
-	text = models.TextField()
+	number = models.TextField()
 
 	def __str__(self):
 		return self.title
