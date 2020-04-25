@@ -3,8 +3,12 @@ from django.http import HttpResponse, JsonResponse
 #from notice_data.models import NoticeData
 
 
-def index(request):
-	return render(request, 'login/index.html')
+def signin(request):
+	return render(request, 'login/signin.html')
+
+
+def login(request):
+	return render(request, 'login/login.html')
 	#notices = NoticeData.objects.all()
 	#context = {'notices':notices}
 	#return render(request, 'notice/index.html', context)
