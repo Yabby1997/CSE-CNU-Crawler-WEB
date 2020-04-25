@@ -1,4 +1,5 @@
 from django.http import HttpResponse, JsonResponse
+import re
 
 import requests
 from bs4 import BeautifulSoup
@@ -47,15 +48,24 @@ def fetch_cse_notices(category):
 
             notice_date = soup.find('td', {'class': 'b-no-right', 'colspan': '2'}).text
             notice_title = soup.find('td', {'class': 'b-title-box b-no-right'}).text
-            notice_text = soup.select('table > tbody > tr > td')
             notice_type = soup.find('h3').text
+            notice_number = re.findall("\d+", notice_post)[0]
+
+            if notice_type == '학사공지':
+                notice_number += '00'
+            elif notice_type == '일반소식':
+                notice_number += '01'
+            elif notice_type == '사업단소식':
+                notice_number += '10'
+            else:
+                notice_number += '11'
 
             notice_dict[notice_index] = {
                 'link': notice_link,
                 'type': notice_type,
                 'date': notice_date,
                 'title': notice_title,
-                'text': notice_text,
+                'number': notice_number,
             }
             notice_index += 1
 
@@ -65,10 +75,10 @@ def fetch_cse_notices(category):
 def add_new_items(crawled_data):
     new = 0
     for key, val in crawled_data.items():
-        if NoticeData.objects.filter(link=val['link']).exists() :
+        if NoticeData.objects.filter(number=val['number']).exists() :
             print('[중복] :', val['title'])
         else :
-            NoticeData(link=val['link'], type=val['type'], date=val['date'], title=val['title'], text=val['text']).save()
+            NoticeData(link=val['link'], type=val['type'], date=val['date'], title=val['title'], number=val['number']).save()
             print('[신규] :', val['title'])
             new += 1
     return new
