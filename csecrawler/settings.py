@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 	'cse_notice',
 	'notice_data',
+	'login',
 ]
 
 MIDDLEWARE = [
