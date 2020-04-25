@@ -2,7 +2,8 @@
 <div clas='container'>
 	<h1>Sign in</h1>
 
-	<form action="">
+	<form method="POST" action="{%url 'siginin'%}">
+		{% csrf_token %}
 		Username:
 		<br>
 		<input name="username" type="text">
