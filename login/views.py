@@ -1,13 +1,23 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import auth
+from .models import Profile
 
 
 def signup(request):
 	if request.method == "POST":
 		if request.POST["password"] == request.POST["pw_confirm"]:
 			user = User.objects.create_user(
-				username=request.POST["username"], password=request.POST["password"])
+				username=request.POST["username"],
+				password=request.POST["password"]
+				)
+			
+			profile = Profile(
+				user=user,
+				portal_id=request.POST["id_portal"],
+				portal_pw=request.POST["pw_portal"]
+				)
+			profile.save()
 			return redirect('login')
 	return render(request, 'login/signup.html')
 
