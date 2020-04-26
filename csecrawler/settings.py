@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 	'cse_notice',
+	'elearn_data',
 	'notice_data',
 	'login',
 ]
