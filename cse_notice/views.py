@@ -3,7 +3,11 @@ from django.http import HttpResponse, JsonResponse
 from notice_data.models import NoticeData
 
 
-def index(request):
+def notice(request):
 	notices = NoticeData.objects.all()
 	context = {'notices':notices}
-	return render(request, 'notice/index.html', context)
+	return render(request, 'notice/notice.html', context)
+
+
+def elearn(request):
+	return render(request, 'notice/elearn.html')

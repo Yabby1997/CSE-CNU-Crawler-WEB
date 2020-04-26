@@ -5,7 +5,8 @@ from login import views as login_page
 
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
-    path('notice/', notices.index, name='notice'),
+    path('elearn/', notices.elearn, name='elearn'),
+	path('notice/', notices.notice, name='notice'),
     path('login/', login_page.login, name='login'),
     path('signup/', login_page.signup, name='signup'),
 ]
