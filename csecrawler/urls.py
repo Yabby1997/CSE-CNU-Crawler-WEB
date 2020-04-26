@@ -7,5 +7,5 @@ urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
     path('notice/', notices.index, name='notice'),
     path('login/', login_page.login, name='login'),
-    path('signin/', login_page.signin, name='signin'),
+    path('signup/', login_page.signup, name='signup'),
 ]

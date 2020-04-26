@@ -1,8 +1,8 @@
 {% block content %}
 <div clas='container'>
-	<h1>Sign in</h1>
+	<h1>Sign Up</h1>
 
-	<form method="POST" action="{%url 'siginin'%}">
+	<form method="POST" action="{%url 'signup'%}">
 		{% csrf_token %}
 		Username:
 		<br>
@@ -14,15 +14,15 @@
 		<br>
 		Confirm Password:
 		<br>
-		<input name="confirm password" type="password">
+		<input name="pw_confirm" type="password">
 		<br>
 		ID of portal.cnu.ac.kr:
 		<br>
-		<input name="ID of portal" type="text">
+		<input name="id_portal" type="text">
 		<br>
 		PW of portal.cnu.ac.kr:
 		<br>
-		<input name="PW of portal" type="password">
+		<input name="pw_portal" type="password">
 		<br><br>
 		<input type="submit" class="btn btn-primary" value="sign up">
 	</form>

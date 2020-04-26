@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 from django.contrib import auth
 
 
-def signin(request):
-	return render(request, 'login/signin.html')
+def signup(request):
+	return render(request, 'login/signup.html')
 
 
 def login(request):
