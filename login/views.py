@@ -4,6 +4,11 @@ from django.contrib import auth
 
 
 def signup(request):
+	if request.method == "POST":
+		if request.POST["password"] == request.POST["pw_confirm"]:
+			user = User.objects.create_user(
+				username=request.POST["username"], password=request.POST["password"])
+			return redirect('login')
 	return render(request, 'login/signup.html')
 
 
