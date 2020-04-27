@@ -16,10 +16,8 @@ def notice(request):
 def elearn(request):
 	profile = Profile.objects.get(user=request.user)
 	if request.method == "POST":
-		context = {'profile':profile}
 		ec.fetch_and_save(profile)
+		elearns = ElearnData.objects.filter(userID=profile)
+		context = {'classes': elearns}
 		return render(request, 'notice/elearn.html', context)
-	else:
-		elearns = ElearnData.objects.all().filter(userID=profile)
-		context = {'class': elearns}
-		return render(request, 'notice/elearn.html', context)
+	return render(request, 'notice/elearn.html')

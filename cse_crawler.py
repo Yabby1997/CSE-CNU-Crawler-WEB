@@ -75,7 +75,7 @@ def fetch_cse_notices(category):
 def add_new_items(crawled_data):
     new = 0
     for key, val in crawled_data.items():
-        if NoticeData.objects.filter(number=val['number']).exists() :
+        if NoticeData.objects.filter(number=val['number']).exists():
             print('[중복] :', val['title'])
         else :
             NoticeData(link=val['link'], type=val['type'], date=val['date'], title=val['title'], number=val['number']).save()
