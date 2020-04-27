@@ -19,7 +19,7 @@ subject_dict = dict()
 def fetch_and_save(profile):
     portal_login_web(profile.portal_id, profile.portal_pw)
     fetch_elearn()
-    show_dict(subject_dict)
+    add_new_items(profile, subject_dict)
 
 
 def fetch_and_show():
@@ -41,15 +41,21 @@ def portal_login_terminal():
     LOGIN_INFO['password'] = pw_portal
 
 
-def add_new_items(crawled_data):
-    for key, val in crawled_data.items():
-        if NoticeData.objects.filter(number=val['number']).exists() :
-            print('[중복] :', val['title'])
-        else :
-            NoticeData(link=val['link'], type=val['type'], date=val['date'], title=val['title'], number=val['number']).save()
-            print('[신규] :', val['title'])
-            new += 1
-    return new
+def add_new_items(profile, data):
+    for key, val in data.items():
+        ElearnData(
+            userID=profile,
+            title=val['name'],
+            percentage=val['percentage'],
+            video0=val['videos'][0],
+            video1=val['videos'][1],
+            video2=val['videos'][2],
+            video3=val['videos'][3],
+            video4=val['videos'][4],
+            report0=val['reports'][0],
+            report1=val['reports'][1],
+        ).save()
+        print('Data', val['name'], 'saved!')
 
 
 def show_dict(dict):
