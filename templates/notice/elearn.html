@@ -39,8 +39,10 @@
         </tr>
         {% endfor %}
         <tbody>
+            <h1>{{profile.portal_id}}</h1>
+            <form method="POST" action="{% url 'elearn'%}">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-primary" value="Refresh">
+            </form>
     </table>
-    {% if user.is_authenticated %}
-        <a class="btn btn-default" value="send help"></a>
-    {% endif %}
 </body>
