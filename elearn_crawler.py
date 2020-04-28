@@ -43,19 +43,32 @@ def portal_login_terminal():
 
 def add_new_items(profile, data):
     for key, val in data.items():
-        ElearnData(
-            userID=profile,
-            title=val['name'],
-            percentage=val['percentage'],
-            video0=val['videos'][0],
-            video1=val['videos'][1],
-            video2=val['videos'][2],
-            video3=val['videos'][3],
-            video4=val['videos'][4],
-            report0=val['reports'][0],
-            report1=val['reports'][1],
-        ).save()
-        print('Data', val['name'], 'saved!')
+        if ElearnData.objects.filter(userID=profile, title=val['name']).exists():
+            update = ElearnData.objects.get(userID=profile, title=val['name'])
+            update.percentage = val['percentage']
+            update.video0 = val['videos'][0]
+            update.video1 = val['videos'][1]
+            update.video2 = val['videos'][2]
+            update.video3 = val['videos'][3]
+            update.video4 = val['videos'][4]
+            update.report0 = val['reports'][0]
+            update.report1 = val['reports'][1]
+            update.save()
+            print('Data', val['name'], 'updated!')
+        else:
+            ElearnData(
+                userID=profile,
+                title=val['name'],
+                percentage=val['percentage'],
+                video0=val['videos'][0],
+                video1=val['videos'][1],
+                video2=val['videos'][2],
+                video3=val['videos'][3],
+                video4=val['videos'][4],
+                report0=val['reports'][0],
+                report1=val['reports'][1],
+            ).save()
+            print('Data', val['name'], 'saved!')
 
 
 def show_dict(dict):
