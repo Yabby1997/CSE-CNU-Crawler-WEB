@@ -13,6 +13,8 @@ class ElearnData(models.Model):
     video4 = models.IntegerField()
     report0 = models.IntegerField()
     report1 = models.IntegerField()
+    videos2watch = models.TextField(default="")
+    reports2watch = models.TextField(default="")
 
     def __str__(self):
         return self.title

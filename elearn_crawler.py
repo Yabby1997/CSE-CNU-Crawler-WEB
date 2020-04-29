@@ -45,13 +45,6 @@ def add_new_items(profile, data):
     for key, val in data.items():
         if ElearnData.objects.filter(userID=profile, title=val['name']).exists():
             target = ElearnData.objects.get(userID=profile, title=val['name'])
-            updated_video0 = val['videos'][0] - target.video0
-            updated_video1 = val['videos'][1] - target.video1
-            updated_video2 = val['videos'][2] - target.video2
-            updated_video3 = val['videos'][3] - target.video3
-            updated_video4 = val['videos'][4] - target.video4
-            updated_report0 = val['reports'][0] - target.report0
-            updated_report1 = val['reports'][1] - target.report1
             target.percentage = val['percentage']
             target.video0 = val['videos'][0]
             target.video1 = val['videos'][1]
@@ -60,8 +53,10 @@ def add_new_items(profile, data):
             target.video4 = val['videos'][4]
             target.report0 = val['reports'][0]
             target.report1 = val['reports'][1]
+            target.videos2watch = val['videos2watch']
+            target.reports2do = val['reports2do']
             target.save()
-            print('Data', val['name'], 'updated!', updated_video0, updated_video1, updated_video2, updated_video3, updated_video4, updated_report0, updated_report1)
+            print('Data', val['name'], 'updated!')
         else:
             ElearnData(
                 userID=profile,
@@ -74,6 +69,8 @@ def add_new_items(profile, data):
                 video4=val['videos'][4],
                 report0=val['reports'][0],
                 report1=val['reports'][1],
+                videos2watch=val['videos2watch'],
+                reports2do=val['reports2do'],
             ).save()
             print('Data', val['name'], 'saved!')
 
@@ -122,39 +119,55 @@ def fetch_elearn():
             course_soup = BeautifulSoup(course_html, 'html.parser')
             course_name = course_soup.find('p', {'class': "list_tit"}).text.replace('과목명 | ', '')
             statistics = course_soup.find_all('td')
+            names = course_soup.find_all('td', {'style': 'text-align:left;padding-left:10px;'})
 
             video_statistics = [0, 0, 0, 0, 0]
+            videos2watch = ''
 
+            i = 0
             for status in statistics:
                 if status.text.find('출석완료') != -1:
                     video_statistics[0] += 1
+                    i += 1
                 if status.text.find('진행중') != -1:
                     video_statistics[1] += 1
+                    videos2watch += names[i].text[0:50].strip().replace('\n', '') + '\n'
+                    i += 1
                 if status.text.find('미진행') != -1:
                     video_statistics[2] += 1
+                    videos2watch += names[i].text[0:50].strip().replace('\n', '') + '\n'
+                    i += 1
                 if status.text.find('학습시작전') != -1:
                     video_statistics[2] -= 1
                     video_statistics[3] += 1
                 if status.text.find('미수강') != -1:
                     video_statistics[4] += 1
+                    i += 1
 
             report = s.get(classroom_report, verify=False)
             report_html = report.text
             report_soup = BeautifulSoup(report_html, 'html.parser')
             statistics = report_soup.find_all('td', {'class': 'ta_c txt1'})
-
+            names = report_soup.select('table.datatable.mg_t10.fs_s > tbody > tr > td.ta_l > strong > a')
             report_statistics = [0, 0]
+            reports2do = ""
 
+            i = 0
             for status in statistics:
                 if status.text.find('제출') != -1:
                     report_statistics[0] += 1
+                    i += 1
                 if status.text.find('미제출') != -1:
                     report_statistics[1] += 1
+                    reports2do += names[i - 1].text.strip().replace('\n', '') + '\n'
+                    i += 1
 
             subject_dict[key]['name'] = course_name
             subject_dict[key]['percentage'] = class_percentage
             subject_dict[key]['videos'] = video_statistics
             subject_dict[key]['reports'] = report_statistics
+            subject_dict[key]['videos2watch'] = videos2watch
+            subject_dict[key]['reports2do'] = reports2do
 
 
 def main():
