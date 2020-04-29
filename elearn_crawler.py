@@ -44,17 +44,24 @@ def portal_login_terminal():
 def add_new_items(profile, data):
     for key, val in data.items():
         if ElearnData.objects.filter(userID=profile, title=val['name']).exists():
-            update = ElearnData.objects.get(userID=profile, title=val['name'])
-            update.percentage = val['percentage']
-            update.video0 = val['videos'][0]
-            update.video1 = val['videos'][1]
-            update.video2 = val['videos'][2]
-            update.video3 = val['videos'][3]
-            update.video4 = val['videos'][4]
-            update.report0 = val['reports'][0]
-            update.report1 = val['reports'][1]
-            update.save()
-            print('Data', val['name'], 'updated!')
+            target = ElearnData.objects.get(userID=profile, title=val['name'])
+            updated_video0 = val['videos'][0] - target.video0
+            updated_video1 = val['videos'][1] - target.video1
+            updated_video2 = val['videos'][2] - target.video2
+            updated_video3 = val['videos'][3] - target.video3
+            updated_video4 = val['videos'][4] - target.video4
+            updated_report0 = val['reports'][0] - target.report0
+            updated_report1 = val['reports'][1] - target.report1
+            target.percentage = val['percentage']
+            target.video0 = val['videos'][0]
+            target.video1 = val['videos'][1]
+            target.video2 = val['videos'][2]
+            target.video3 = val['videos'][3]
+            target.video4 = val['videos'][4]
+            target.report0 = val['reports'][0]
+            target.report1 = val['reports'][1]
+            target.save()
+            print('Data', val['name'], 'updated!', updated_video0, updated_video1, updated_video2, updated_video3, updated_video4, updated_report0, updated_report1)
         else:
             ElearnData(
                 userID=profile,
@@ -114,7 +121,7 @@ def fetch_elearn():
             course_html = course.text
             course_soup = BeautifulSoup(course_html, 'html.parser')
             course_name = course_soup.find('p', {'class': "list_tit"}).text.replace('과목명 | ', '')
-            statistics = course_soup.find_all('td', {'class': 'ag_c pd_ln'})
+            statistics = course_soup.find_all('td')
 
             video_statistics = [0, 0, 0, 0, 0]
 
