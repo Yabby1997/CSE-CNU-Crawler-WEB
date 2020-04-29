@@ -10,6 +10,12 @@
 </head>
 <body>
 <div class="container">
+    <h1>{{profile.portal_id}}</h1>
+    <h3>{{profile.last_login}}</h3>
+    <form method="POST" action="{% url 'elearn'%}">
+        {% csrf_token %}
+        <input type="submit" class="btn btn-primary" value="Refresh">
+    </form>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -47,9 +53,9 @@
             </tr>
         </thead>
         <tbody>
-            {% for class in classes %}
+            {% for video in videos %}
             <tr>
-                <td>{{class.videos2watch}}</td>
+                <td>{{video}}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -61,15 +67,11 @@
             </tr>
         </thead>
         <tbody>
-            {% for class in classes %}
+            {% for report in reports %}
             <tr>
-                <td>{{class.reports2do}}</td>
+                <td>{{report}}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    <form method="POST" action="{% url 'elearn'%}">
-        {% csrf_token %}
-        <input type="submit" class="btn btn-primary" value="Refresh">
-    </form>
 </body>

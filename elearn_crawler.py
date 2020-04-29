@@ -1,5 +1,6 @@
 # coding=utf-8
 import requests
+import json
 from bs4 import BeautifulSoup
 from login.models import Profile
 from elearn_data.models import ElearnData
@@ -122,7 +123,7 @@ def fetch_elearn():
             names = course_soup.find_all('td', {'style': 'text-align:left;padding-left:10px;'})
 
             video_statistics = [0, 0, 0, 0, 0]
-            videos2watch = ''
+            videos2watch = []
 
             i = 0
             for status in statistics:
@@ -131,11 +132,11 @@ def fetch_elearn():
                     i += 1
                 if status.text.find('진행중') != -1:
                     video_statistics[1] += 1
-                    videos2watch += names[i].text[0:50].strip().replace('\n', '') + '\n'
+                    videos2watch.append(names[i].text[0:50].strip().replace('\n', '').replace('\t', ''))
                     i += 1
                 if status.text.find('미진행') != -1:
                     video_statistics[2] += 1
-                    videos2watch += names[i].text[0:50].strip().replace('\n', '') + '\n'
+                    videos2watch.append(names[i].text[0:50].strip().replace('\n', '').replace('\t', ''))
                     i += 1
                 if status.text.find('학습시작전') != -1:
                     video_statistics[2] -= 1
@@ -150,7 +151,7 @@ def fetch_elearn():
             statistics = report_soup.find_all('td', {'class': 'ta_c txt1'})
             names = report_soup.select('table.datatable.mg_t10.fs_s > tbody > tr > td.ta_l > strong > a')
             report_statistics = [0, 0]
-            reports2do = ""
+            reports2do = []
 
             i = 0
             for status in statistics:
@@ -159,15 +160,15 @@ def fetch_elearn():
                     i += 1
                 if status.text.find('미제출') != -1:
                     report_statistics[1] += 1
-                    reports2do += names[i - 1].text.strip().replace('\n', '') + '\n'
+                    reports2do.append(names[i - 1].text.strip().replace('\n', '').replace('\t', ''))
                     i += 1
 
             subject_dict[key]['name'] = course_name
             subject_dict[key]['percentage'] = class_percentage
             subject_dict[key]['videos'] = video_statistics
             subject_dict[key]['reports'] = report_statistics
-            subject_dict[key]['videos2watch'] = videos2watch
-            subject_dict[key]['reports2do'] = reports2do
+            subject_dict[key]['videos2watch'] = json.dumps(videos2watch, ensure_ascii=False, indent="\t")
+            subject_dict[key]['reports2do'] = json.dumps(reports2do, ensure_ascii=False, indent="\t")
 
 
 def main():

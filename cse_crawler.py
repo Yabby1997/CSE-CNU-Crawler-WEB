@@ -7,10 +7,10 @@ import os
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', "csecrawler.settings")
 import django
+
 django.setup()
 
 from notice_data.models import NoticeData
-
 
 notice_base = 'https://computer.cnu.ac.kr/computer/notice'
 
@@ -35,7 +35,7 @@ def fetch_cse_notices(category):
         soup = BeautifulSoup(html, 'html.parser')
         notices = soup.select(notice_selector)
 
-        if notices == []:
+        if not notices:
             break
 
         for notice in notices:
@@ -77,8 +77,9 @@ def add_new_items(crawled_data):
     for key, val in crawled_data.items():
         if NoticeData.objects.filter(number=val['number']).exists():
             print('[중복] :', val['title'])
-        else :
-            NoticeData(link=val['link'], type=val['type'], date=val['date'], title=val['title'], number=val['number']).save()
+        else:
+            NoticeData(link=val['link'], type=val['type'], date=val['date'], title=val['title'],
+                       number=val['number']).save()
             print('[신규] :', val['title'])
             new += 1
     return new
@@ -89,9 +90,9 @@ def fetch_and_save():
     bachelor = fetch_cse_notices(notice_bachelor)
     project = fetch_cse_notices(notice_project)
     print('notice data fetched')
-    new_count = add_new_items(normal) + add_new_items(bachelor) + add_new_items(project) # + add_new_items(job)
+    new_count = add_new_items(normal) + add_new_items(bachelor) + add_new_items(project)  # + add_new_items(job)
     print(new_count, 'new notice data successfully saved!')
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     fetch_and_save()
