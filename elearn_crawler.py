@@ -159,37 +159,29 @@ def fetch_elearn():
             course_name = course_soup.find('p', {'class': "list_tit"}).text.replace('과목명 | ', '')
             statistics = course_soup.find_all('td')
             names = course_soup.find_all('td', {'style': 'text-align:left;padding-left:10px;'})
-            infos = course_soup.select('td', {'class': 'ag_c pd_ln'})
             dues = []
-
-            for info in infos:
-                if info.text.find('~ 20') != -1 and info.text.find('학습기간') == -1:
-                    dues.append(info.text[19:].replace('\t', '').replace('\n', '').replace('\r', '').rstrip())
 
             video_statistics = [0, 0, 0, 0, 0]
             videos2watch = []
 
-            i = 0
             for status in statistics:
+                if status.text.find('~ 20') != -1 and status.text.find('학습기간') == -1:
+                    dues.append(status.text[19:].replace('\t', '').replace('\n', '').replace('\r', '').rstrip())
                 if status.text.find('출석완료') != -1:
                     video_statistics[0] += 1
-                    i += 1
                 if status.text.find('진행중') != -1:
                     video_statistics[1] += 1
-                    days, hours = convert_time(dues[i], '%Y.%m.%d %H:%M')
-                    videos2watch.append(course_name + names[i].text[0:50].strip().replace('\n', '').replace('\t', '') + '   출석까지 '+ days + '일 ' + hours + '시간 남음')
-                    i += 1
+                    days, hours = convert_time(dues[-1], '%Y.%m.%d %H:%M')
+                    videos2watch.append(course_name + names[-1].text[0:50].strip().replace('\n', '').replace('\t', '') + '   출석까지 '+ days + '일 ' + hours + '시간 남음')
                 if status.text.find('미진행') != -1:
                     video_statistics[2] += 1
-                    days, hours = convert_time(dues[i], '%Y.%m.%d %H:%M')
-                    videos2watch.append(course_name + names[i].text[0:50].strip().replace('\n', '').replace('\t', '') + '   출석까지 '+ days + '일 ' + hours + '시간 남음')
-                    i += 1
+                    days, hours = convert_time(dues[-1], '%Y.%m.%d %H:%M')
+                    videos2watch.append(course_name + names[-1].text[0:50].strip().replace('\n', '').replace('\t', '') + '   출석까지 '+ days + '일 ' + hours + '시간 남음')
                 if status.text.find('학습시작전') != -1:
                     video_statistics[2] -= 1
                     video_statistics[3] += 1
                 if status.text.find('미수강') != -1:
                     video_statistics[4] += 1
-                    i += 1
 
             report = s.get(classroom_report, verify=False)
             report_html = report.text
@@ -199,7 +191,7 @@ def fetch_elearn():
             dues = report_soup.select('table.datatable.mg_t10.fs_s > tbody > tr > td > a')
             report_statistics = [0, 0]
             reports2do = []
-
+            
             i = 0
             for status in statistics:
                 if status.text.find('제출') != -1:
