@@ -5,7 +5,6 @@ from notice_data.models import NoticeData
 from elearn_data.models import ElearnData
 from login.models import Profile
 import elearn_crawler as ec
-import json
 
 
 def notice(request):

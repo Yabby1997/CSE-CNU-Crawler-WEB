@@ -4,6 +4,7 @@ from django.contrib import auth
 from django.contrib.auth.hashers import check_password
 from django.contrib import messages
 from .models import Profile
+import elearn_crawler as ec
 
 
 def signup(request):
@@ -19,7 +20,9 @@ def signup(request):
 		else:
 			if password == confirm:
 				user = User.objects.create_user(username=username, password=password)
-				Profile(user=user, portal_id=id_portal, portal_pw=pw_portal).save()
+				profile = Profile(user=user, portal_id=id_portal, portal_pw=pw_portal)
+				profile.save()
+				ec.fetch_and_save(profile)
 				auth.login(request, user)
 				return redirect('elearn')
 	return render(request, 'login/signup.html')
