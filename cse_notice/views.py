@@ -18,5 +18,5 @@ def elearn(request):
 	profile = Profile.objects.get(user=request.user)
 	context = ec.get_context(profile)
 	if request.method == "POST":
-		context = ec.fetch_and_save(profile)
+		context = ec.fetch_and_update(profile)
 	return render(request, 'notice/elearn.html', context)

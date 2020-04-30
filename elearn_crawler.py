@@ -19,10 +19,18 @@ classroom_report = elearn_base + '/lms/class/report/stud/doListView.dunet'
 LOGIN_INFO = dict()
 subject_dict = dict()
 
+
 def fetch_and_save(profile):
     portal_login_web(profile.portal_id, profile.portal_pw)
     fetch_elearn()
-    add_new_items(profile, subject_dict)
+    save_items(profile, subject_dict)
+    return get_context(profile)
+
+
+def fetch_and_update(profile):
+    portal_login_web(profile.portal_id, profile.portal_pw)
+    fetch_elearn()
+    update_items(profile, subject_dict)
     return get_context(profile)
 
 
@@ -68,7 +76,28 @@ def portal_login_terminal():
     LOGIN_INFO['password'] = pw_portal
 
 
-def add_new_items(profile, data):
+def save_items(profile, data):
+    for key, val in data.items():
+        ElearnData(
+            userID=profile,
+            title=val['name'],
+            percentage=val['percentage'],
+            video0=val['videos'][0],
+            video1=val['videos'][1],
+            video2=val['videos'][2],
+            video3=val['videos'][3],
+            video4=val['videos'][4],
+            report0=val['reports'][0],
+            report1=val['reports'][1],
+            videos2watch=val['videos2watch'],
+            reports2do=val['reports2do'],
+        ).save()
+        print('Data', val['name'], 'saved!')
+    profile.last_update = timezone.now()
+    profile.save()
+
+
+def update_items(profile, data):
     for key, val in data.items():
         if ElearnData.objects.filter(userID=profile, title=val['name']).exists():
             target = ElearnData.objects.get(userID=profile, title=val['name'])
@@ -84,22 +113,6 @@ def add_new_items(profile, data):
             target.reports2do = val['reports2do']
             target.save()
             print('Data', val['name'], 'updated!')
-        else:
-            ElearnData(
-                userID=profile,
-                title=val['name'],
-                percentage=val['percentage'],
-                video0=val['videos'][0],
-                video1=val['videos'][1],
-                video2=val['videos'][2],
-                video3=val['videos'][3],
-                video4=val['videos'][4],
-                report0=val['reports'][0],
-                report1=val['reports'][1],
-                videos2watch=val['videos2watch'],
-                reports2do=val['reports2do'],
-            ).save()
-            print('Data', val['name'], 'saved!')
     profile.last_update = timezone.now()
     profile.save()
 
