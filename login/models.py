@@ -9,7 +9,7 @@ class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	portal_id = models.CharField(max_length=50)
 	portal_pw = models.CharField(max_length=50)
-	last_login = models.DateTimeField(default=timezone.now)
+	last_update = models.DateTimeField(default=timezone.now)
 	
 '''
 @receiver(post_save, sender=User)

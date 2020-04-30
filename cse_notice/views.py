@@ -16,27 +16,7 @@ def notice(request):
 
 def elearn(request):
 	profile = Profile.objects.get(user=request.user)
+	context = ec.get_context(profile)
 	if request.method == "POST":
-		ec.fetch_and_save(profile)
-		elearns = ElearnData.objects.filter(userID=profile)
-
-		videos2watch = []
-		reports2do = []
-
-		for data in elearns:
-			videos = json.loads(data.videos2watch)
-			for video in videos:
-				videos2watch.append(video)
-
-			reports = json.loads(data.reports2do)
-			for report in reports:
-				reports2do.append(report)
-
-		context = {
-			'profile': profile,
-			'classes': elearns,
-			'videos': videos2watch,
-			'reports': reports2do,
-		}
-		return render(request, 'notice/elearn.html', context)
-	return render(request, 'notice/elearn.html')
+		context = ec.fetch_and_save(profile)
+	return render(request, 'notice/elearn.html', context)

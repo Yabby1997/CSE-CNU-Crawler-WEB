@@ -9,4 +9,5 @@ urlpatterns = [
 	path('notice/', notices.notice, name='notice'),
     path('login/', login_page.login, name='login'),
     path('signup/', login_page.signup, name='signup'),
+    path('setting/', login_page.setting, name='setting'),
 ]

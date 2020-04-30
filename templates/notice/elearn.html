@@ -11,10 +11,20 @@
 <body>
 <div class="container">
     <h1>{{profile.portal_id}}</h1>
-    <h3>{{profile.last_login}}</h3>
+    <h3>{{profile.last_update}} 기준</h3>
     <form method="POST" action="{% url 'elearn'%}">
         {% csrf_token %}
         <input type="submit" class="btn btn-primary" value="Refresh">
+        <div>
+			<a href="{% url 'notice' %}" class="txt1">
+				공지보기
+			</a>
+        </div>
+        <div>
+			<a href="{% url 'setting' %}" class="txt1">
+				비번변경
+			</a>
+        </div>
     </form>
     <table class="table table-striped">
         <thead>

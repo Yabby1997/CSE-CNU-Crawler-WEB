@@ -4,6 +4,7 @@ import json
 from bs4 import BeautifulSoup
 from login.models import Profile
 from elearn_data.models import ElearnData
+from django.utils import timezone
 
 cnuportal_login = 'https://portal.cnu.ac.kr/enview/user/login.face'
 elearn_base = 'http://e-learn.cnu.ac.kr'
@@ -16,11 +17,36 @@ classroom_report = elearn_base + '/lms/class/report/stud/doListView.dunet'
 LOGIN_INFO = dict()
 subject_dict = dict()
 
-
 def fetch_and_save(profile):
     portal_login_web(profile.portal_id, profile.portal_pw)
     fetch_elearn()
     add_new_items(profile, subject_dict)
+    profile.last_update = timezone.now()
+    profile.save()
+    return get_context(profile)
+
+
+def get_context(profile):
+    elearns = ElearnData.objects.filter(userID=profile)
+    videos2watch = []
+    reports2do = []
+
+    for data in elearns:
+        videos = json.loads(data.videos2watch)
+        for video in videos:
+            videos2watch.append(video)
+
+        reports = json.loads(data.reports2do)
+        for report in reports:
+            reports2do.append(report)
+
+    context = {
+        'profile': profile,
+        'classes': elearns,
+        'videos': videos2watch,
+        'reports': reports2do,
+    }
+    return context
 
 
 def fetch_and_show():

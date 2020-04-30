@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>SignUp</title>
+	<title>Setting</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" type="image/png" href='% static "login/images/icons/favicon.ico"/ %}'>
@@ -19,12 +19,12 @@
 
 	<script>	
 		function signin(){
-			if($("#username").val().length==0){ alert("유저명을 입력하세요."); $("#username").focus(); return false; }
-			if($("#password").val().length==0){ alert("비밀번호를 입력하세요."); $("#password").focus(); return false; }
-			if($("#pw_confirm").val().length==0){ alert("확인을 위해 비밀번호를 한번 더 입력하세요."); $("#pw_confirm").focus(); return false; }
-			if($("#id_portal").val().length==0){ alert("portal.cnu.ac.kr의 ID를 입력하세요."); $("#id_portal").focus(); return false; }
-			if($("#pw_portal").val().length==0){ alert("portal.cnu.ac.kr의 PW를 입력하세요."); $("#pw_portal").focus(); return false; }	
-			else{signupForm.submit();}
+			if($("#password_old").val().length==0){ alert("기존 비밀번호를 입력하세요."); $("#password_old").focus(); return false; }
+			if($("#password").val().length==0){ alert("바꿀 비밀번호를 입력하세요."); $("#password").focus(); return false; }
+			if($("#pw_confirm").val().length==0){ alert("확인을 위해 바꿀 비밀번호를 한번 더 입력하세요."); $("pw_confirm").focus(); return false; }
+			if($("#pw_confirm").val().length==0){ alert("확인을 위해 바꿀 비밀번호를 한번 더 입력하세요."); $("pw_confirm").focus(); return false; }
+			if($("#pw_portal").val().length==0){ alert("바꿀 포탈 비밀번호를 입력하세요."); $("pw_portal").focus(); return false; }
+			else{changeForm.submit();}
 		}
 	</script>
 
@@ -34,45 +34,38 @@
 	<div class="limiter">
 		<div class="container-login100">
 			<div class="wrap-login100 p-t-50 p-b-90">
-				<form name=signupForm method="POST" action="{% url 'signup'%}">
+				<form name=changeForm method="POST" action="{% url 'setting'%}">
 					{% csrf_token %}
 					<span class="login100-form-title p-b-51">
 						CNU CSE Crawler
 					</span>
 					<span class="login100-form-title p-b-51">
-						SIGN UP
+						CHANGE Password
 					</span>
 
-					
-					<div class="wrap-input100 validate-input m-b-16" data-validate = "Username is required">
-						<input class="input100" type="text" id="username" name="username" placeholder="유저명">
-						<span class="focus-input100"></span>
-					</div>
-					
-					
-					<div class="wrap-input100 validate-input m-b-16" data-validate = "Password is required">
-						<input class="input100" type="password" id="password" name="password" placeholder="비밀번호">
+					<div class="wrap-input100 validate-input m-b-16" data-validate = "Old password is required">
+						<input class="input100" type="password" id="password_old" name="password_old" placeholder="기존 비밀번호 확인">
 						<span class="focus-input100"></span>
 					</div>
 
-					<div class="wrap-input100 validate-input m-b-16" data-validate = "Confirm is required">
-						<input class="input100" type="password" id="pw_confirm" name="pw_confirm" placeholder="비밀번호 확인">
+					<div class="wrap-input100 validate-input m-b-16" data-validate = "New password is required">
+						<input class="input100" type="password" id="password" name="password" placeholder="바꿀 비밀번호">
 						<span class="focus-input100"></span>
 					</div>
 
-					<div class="wrap-input100 validate-input m-b-16" data-validate = "ID for portal is required">
-						<input class="input100" type="text" id="id_portal" name="id_portal" placeholder="포탈(portal.cnu.ac.kr) ID를 입력해주세요.">
+					<div class="wrap-input100 validate-input m-b-16" data-validate = "Confirm password is required">
+						<input class="input100" type="password" id="pw_confirm" name="pw_confirm" placeholder="바꿀 비밀번호 확인">
 						<span class="focus-input100"></span>
 					</div>
 
-					<div class="wrap-input100 validate-input m-b-16" data-validate = "Password for portal is required">
-						<input class="input100" type="password" id="pw_portal" name="pw_portal" placeholder="포탈(portal.cnu.ac.kr) PW를 입력해주세요.">
+					<div class="wrap-input100 validate-input m-b-16" data-validate = "Confirm password is required">
+						<input class="input100" type="password" id="pw_portal" name="pw_portal" placeholder="바꿀 포탈(portal.cnu.ac.kr) PW를 입력해주세요.">
 						<span class="focus-input100"></span>
 					</div>
 
 					<div class="container-login100-form-btn m-t-17">
 						<button type="button" onclick="signin()" class="login100-form-btn">
-							가입!
+							바꾸기!
 						</button>
 					</div>
 				</form>
