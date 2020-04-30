@@ -191,17 +191,17 @@ def fetch_elearn():
             dues = report_soup.select('table.datatable.mg_t10.fs_s > tbody > tr > td > a')
             report_statistics = [0, 0]
             reports2do = []
-            
+
             i = 0
             for status in statistics:
-                if status.text.find('제출') != -1:
-                    report_statistics[0] += 1
-                    i += 1
                 if status.text.find('미제출') != -1:
                     report_statistics[1] += 1
                     endDateTime = dues[i - 1].text[26:].replace('\t', '').replace('\n', '').replace('\r', '')
                     days, hours = convert_time(endDateTime, "%y/%m/%d %H:%M")
                     reports2do.append(course_name + names[i - 1].text.strip().replace('\n', '').replace('\t', '') + '   제출까지 '+ days + '일 ' + hours + '시간 남음')
+                    i += 1
+                elif status.text.find('미제출') != -1:
+                    report_statistics[0] += 1
                     i += 1
 
             subject_dict[key]['name'] = course_name
