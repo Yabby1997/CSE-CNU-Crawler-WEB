@@ -11,7 +11,7 @@
 <body>
 <div class="container">
     <h1>{{profile.portal_id}}</h1>
-    <h3>{{profile.last_update}} 기준</h3>
+    <h3>{{profile.last_update}}</h3>
     <form method="POST" action="{% url 'elearn'%}">
         {% csrf_token %}
         <input type="submit" class="btn btn-primary" value="Refresh">

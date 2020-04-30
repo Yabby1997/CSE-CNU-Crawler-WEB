@@ -5,6 +5,8 @@ from bs4 import BeautifulSoup
 from login.models import Profile
 from elearn_data.models import ElearnData
 from django.utils import timezone
+from datetime import datetime
+import pytz
 
 cnuportal_login = 'https://portal.cnu.ac.kr/enview/user/login.face'
 elearn_base = 'http://e-learn.cnu.ac.kr'
@@ -21,8 +23,6 @@ def fetch_and_save(profile):
     portal_login_web(profile.portal_id, profile.portal_pw)
     fetch_elearn()
     add_new_items(profile, subject_dict)
-    profile.last_update = timezone.now()
-    profile.save()
     return get_context(profile)
 
 
@@ -100,6 +100,8 @@ def add_new_items(profile, data):
                 reports2do=val['reports2do'],
             ).save()
             print('Data', val['name'], 'saved!')
+    profile.last_update = timezone.now()
+    profile.save()
 
 
 def show_dict(dict):
@@ -107,6 +109,16 @@ def show_dict(dict):
         print('+++' * 10)
         print(value['name'], value['percentage'])
         print(value['videos'], value['reports'])
+
+
+def convert_time(endDateTime, mask):
+    endDateTime = datetime.strptime(endDateTime, mask)
+    endDateTime = endDateTime.replace(tzinfo=pytz.timezone('Asia/Seoul'))
+    now = datetime.now(pytz.timezone('Asia/Seoul'))
+    delta = endDateTime - now
+    days = str(delta.days)
+    hours = str(delta.seconds // 3600)
+    return days, hours
 
 
 def fetch_elearn():
@@ -147,6 +159,12 @@ def fetch_elearn():
             course_name = course_soup.find('p', {'class': "list_tit"}).text.replace('과목명 | ', '')
             statistics = course_soup.find_all('td')
             names = course_soup.find_all('td', {'style': 'text-align:left;padding-left:10px;'})
+            infos = course_soup.select('td', {'class': 'ag_c pd_ln'})
+            dues = []
+
+            for info in infos:
+                if info.text.find('~ 20') != -1 and info.text.find('학습기간') == -1:
+                    dues.append(info.text[19:].replace('\t', '').replace('\n', '').replace('\r', '').rstrip())
 
             video_statistics = [0, 0, 0, 0, 0]
             videos2watch = []
@@ -158,11 +176,13 @@ def fetch_elearn():
                     i += 1
                 if status.text.find('진행중') != -1:
                     video_statistics[1] += 1
-                    videos2watch.append(names[i].text[0:50].strip().replace('\n', '').replace('\t', ''))
+                    days, hours = convert_time(dues[i], '%Y.%m.%d %H:%M')
+                    videos2watch.append(course_name + names[i].text[0:50].strip().replace('\n', '').replace('\t', '') + '   출석까지 '+ days + '일 ' + hours + '시간 남음')
                     i += 1
                 if status.text.find('미진행') != -1:
                     video_statistics[2] += 1
-                    videos2watch.append(names[i].text[0:50].strip().replace('\n', '').replace('\t', ''))
+                    days, hours = convert_time(dues[i], '%Y.%m.%d %H:%M')
+                    videos2watch.append(course_name + names[i].text[0:50].strip().replace('\n', '').replace('\t', '') + '   출석까지 '+ days + '일 ' + hours + '시간 남음')
                     i += 1
                 if status.text.find('학습시작전') != -1:
                     video_statistics[2] -= 1
@@ -176,6 +196,7 @@ def fetch_elearn():
             report_soup = BeautifulSoup(report_html, 'html.parser')
             statistics = report_soup.find_all('td', {'class': 'ta_c txt1'})
             names = report_soup.select('table.datatable.mg_t10.fs_s > tbody > tr > td.ta_l > strong > a')
+            dues = report_soup.select('table.datatable.mg_t10.fs_s > tbody > tr > td > a')
             report_statistics = [0, 0]
             reports2do = []
 
@@ -186,7 +207,9 @@ def fetch_elearn():
                     i += 1
                 if status.text.find('미제출') != -1:
                     report_statistics[1] += 1
-                    reports2do.append(names[i - 1].text.strip().replace('\n', '').replace('\t', ''))
+                    endDateTime = dues[i - 1].text[26:].replace('\t', '').replace('\n', '').replace('\r', '')
+                    days, hours = convert_time(endDateTime, "%y/%m/%d %H:%M")
+                    reports2do.append(course_name + names[i - 1].text.strip().replace('\n', '').replace('\t', '') + '   제출까지 '+ days + '일 ' + hours + '시간 남음')
                     i += 1
 
             subject_dict[key]['name'] = course_name
