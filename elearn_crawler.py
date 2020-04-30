@@ -17,19 +17,18 @@ classroom_course = elearn_base + '/lms/class/courseSchedule/doListView.dunet'
 classroom_report = elearn_base + '/lms/class/report/stud/doListView.dunet'
 
 LOGIN_INFO = dict()
-subject_dict = dict()
 
 
 def fetch_and_save(profile):
     portal_login_web(profile.portal_id, profile.portal_pw)
-    fetch_elearn()
+    subject_dict = fetch_elearn()
     save_items(profile, subject_dict)
     return get_context(profile)
 
 
 def fetch_and_update(profile):
     portal_login_web(profile.portal_id, profile.portal_pw)
-    fetch_elearn()
+    subject_dict = fetch_elearn()
     update_items(profile, subject_dict)
     return get_context(profile)
 
@@ -59,7 +58,7 @@ def get_context(profile):
 
 def fetch_and_show():
     portal_login_terminal()
-    fetch_elearn()
+    subject_dict = fetch_elearn()
     dict_show(subject_dict)
 
 
@@ -143,6 +142,7 @@ def fetch_elearn():
         elearn_html = myLecture.text
         elearn_soup = BeautifulSoup(elearn_html, 'html.parser')
         subjects = elearn_soup.find_all('a', {'class': 'classin2'})
+        subject_dict = dict()
 
         i = 0
         for subject in subjects:
@@ -223,6 +223,7 @@ def fetch_elearn():
             subject_dict[key]['reports'] = report_statistics
             subject_dict[key]['videos2watch'] = json.dumps(videos2watch, ensure_ascii=False, indent="\t")
             subject_dict[key]['reports2do'] = json.dumps(reports2do, ensure_ascii=False, indent="\t")
+    return subject_dict
 
 
 def main():
