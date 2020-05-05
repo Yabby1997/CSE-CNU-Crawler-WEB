@@ -17,12 +17,18 @@
 	<link rel="stylesheet" type="text/css" href='{% static "login/css/util.css" %}'>
 	<link rel="stylesheet" type="text/css" href='{% static "login/css/main.css" %}'>
 
-	<script>	
+	<script>
+		function allnumeric(txt){
+      		var numbers = /^[0-9]+$/;
+      		if(txt.match(numbers)){return true;}
+      		else{return false;}
+   		} 
 		function signin(){
 			if($("#username").val().length==0){ alert("유저명을 입력하세요."); $("#username").focus(); return false; }
 			if($("#password").val().length==0){ alert("비밀번호를 입력하세요."); $("#password").focus(); return false; }
 			if($("#pw_confirm").val().length==0){ alert("확인을 위해 비밀번호를 한번 더 입력하세요."); $("#pw_confirm").focus(); return false; }
-			if($("#id_portal").val().length==0){ alert("portal.cnu.ac.kr의 ID를 입력하세요."); $("#id_portal").focus(); return false; }
+			if($("#id_portal").val().length!=9){ alert("학번 9자리를 입력하세요."); $("#id_portal").focus(); return false; }	
+			if(!allnumeric($("#id_portal").val())){ alert("학번 9자리를 입력하세요."); $("#id_portal").focus(); return false; }	
 			if($("#pw_portal").val().length==0){ alert("portal.cnu.ac.kr의 PW를 입력하세요."); $("#pw_portal").focus(); return false; }	
 			else{signupForm.submit();}
 		}
@@ -37,12 +43,15 @@
 				<form name=signupForm method="POST" action="{% url 'signup'%}">
 					{% csrf_token %}
 					<span class="login100-form-title p-b-51">
-						CNU CSE Crawler
+						CNU Crawler
 					</span>
 					<span class="login100-form-title p-b-51">
 						SIGN UP
 					</span>
 
+					<span class="txt1">
+						사용할 유저명과 비밀번호를 입력해주세요.
+					</span>
 					
 					<div class="wrap-input100 validate-input m-b-16" data-validate = "Username is required">
 						<input class="input100" type="text" id="username" name="username" placeholder="유저명">
@@ -60,13 +69,17 @@
 						<span class="focus-input100"></span>
 					</div>
 
+					<span class="txt1">
+						portal.cnu.ac.kr의 ID, PW를 입력해주세요.
+					</span>
+
 					<div class="wrap-input100 validate-input m-b-16" data-validate = "ID for portal is required">
-						<input class="input100" type="text" id="id_portal" name="id_portal" placeholder="포탈(portal.cnu.ac.kr) ID를 입력해주세요.">
+						<input class="input100" type="text" id="id_portal" name="id_portal" placeholder="포탈 ID, 학번을 입력해주세요.">
 						<span class="focus-input100"></span>
 					</div>
 
 					<div class="wrap-input100 validate-input m-b-16" data-validate = "Password for portal is required">
-						<input class="input100" type="password" id="pw_portal" name="pw_portal" placeholder="포탈(portal.cnu.ac.kr) PW를 입력해주세요.">
+						<input class="input100" type="password" id="pw_portal" name="pw_portal" placeholder="포탈 PW를 입력해주세요.">
 						<span class="focus-input100"></span>
 					</div>
 

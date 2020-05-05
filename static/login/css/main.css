@@ -120,9 +120,10 @@ iframe {
 [ Utility ]*/
 .txt1 {
   font-family: Ubuntu-Regular;
-  font-size: 16px;
+  font-size: 20px;
   color: #827ffe;
   line-height: 1.4;
+  text-align: center;
 }
 
 
