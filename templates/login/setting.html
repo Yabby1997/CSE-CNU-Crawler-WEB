@@ -22,7 +22,6 @@
 			if($("#password_old").val().length==0){ alert("기존 비밀번호를 입력하세요."); $("#password_old").focus(); return false; }
 			if($("#password").val().length==0){ alert("바꿀 비밀번호를 입력하세요."); $("#password").focus(); return false; }
 			if($("#pw_confirm").val().length==0){ alert("확인을 위해 바꿀 비밀번호를 한번 더 입력하세요."); $("pw_confirm").focus(); return false; }
-			if($("#pw_confirm").val().length==0){ alert("확인을 위해 바꿀 비밀번호를 한번 더 입력하세요."); $("pw_confirm").focus(); return false; }
 			if($("#pw_portal").val().length==0){ alert("바꿀 포탈 비밀번호를 입력하세요."); $("pw_portal").focus(); return false; }
 			else{changeForm.submit();}
 		}
@@ -37,7 +36,7 @@
 				<form name=changeForm method="POST" action="{% url 'setting'%}">
 					{% csrf_token %}
 					<span class="login100-form-title p-b-51">
-						CNU CSE Crawler
+						CNU Crawler
 					</span>
 					<span class="login100-form-title p-b-51">
 						CHANGE Password
@@ -59,7 +58,7 @@
 					</div>
 
 					<div class="wrap-input100 validate-input m-b-16" data-validate = "Confirm password is required">
-						<input class="input100" type="password" id="pw_portal" name="pw_portal" placeholder="바꿀 포탈(portal.cnu.ac.kr) PW를 입력해주세요.">
+						<input class="input100" type="password" id="pw_portal" name="pw_portal" placeholder="바꿀 포탈 비밀번호">
 						<span class="focus-input100"></span>
 					</div>
 

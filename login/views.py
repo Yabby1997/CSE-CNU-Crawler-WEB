@@ -35,7 +35,6 @@ def login(request):
 		username = request.POST['username']
 		password = request.POST['password']
 
-
 		if not (username and password):
 			return render(request, 'login/login.html')
 		else:
@@ -63,13 +62,14 @@ def setting(request):
 			profile = Profile.objects.get(user=request.user)
 			if check_password(password_old, user.password):
 				if password == confirm:
-					encrypted_portal_pw = cisco_type7.hash(pw_portal)
 					user.set_password(password)
 					user.save()
-					profile.portal_pw = encrypted_portal_pw
+					profile.portal_pw = cisco_type7.hash(pw_portal)
 					profile.save()
+					ec.clear_items(profile)
+					ec.fetch_and_save(profile)
 					auth.login(request, user)
+					return redirect('elearn')
 				else:
 					return render(request, 'login/setting.html')
-			return redirect('elearn')
 	return render(request, 'login/setting.html')

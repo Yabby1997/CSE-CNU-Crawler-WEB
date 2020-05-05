@@ -36,24 +36,36 @@ def fetch_and_update(profile):
 
 def get_context(profile):
     elearns = ElearnData.objects.filter(userID=profile)
-    videos2watch = []
-    reports2do = []
+    if not elearns:
+        elearns = None
+        videos2watch = ['크롤링된 데이터가 없습니다. 포탈 비밀번호를 확인해주세요.']
+        reports2do = ['크롤링된 데이터가 없습니다. 포탈 비밀번호를 확인해주세요.']
 
-    for data in elearns:
-        videos = json.loads(data.videos2watch)
-        for video in videos:
-            videos2watch.append(video)
+        context = {
+            'profile': profile,
+            'classes': elearns,
+            'videos': videos2watch,
+            'reports': reports2do,
+        }
+    else:
+        videos2watch = []
+        reports2do = []
 
-        reports = json.loads(data.reports2do)
-        for report in reports:
-            reports2do.append(report)
+        for data in elearns:
+            videos = json.loads(data.videos2watch)
+            for video in videos:
+                videos2watch.append(video)
 
-    context = {
-        'profile': profile,
-        'classes': elearns,
-        'videos': videos2watch,
-        'reports': reports2do,
-    }
+            reports = json.loads(data.reports2do)
+            for report in reports:
+                reports2do.append(report)
+
+        context = {
+            'profile': profile,
+            'classes': elearns,
+            'videos': videos2watch,
+            'reports': reports2do,
+        }
     return context
 
 
@@ -115,6 +127,12 @@ def update_items(profile, data):
             print('Data', val['name'], 'updated!')
     profile.last_update = timezone.now()
     profile.save()
+
+
+def clear_items(profile):
+    targets = ElearnData.objects.filter(userID=profile)
+    for target in targets:
+        target.delete()
 
 
 def show_dict(dict):
