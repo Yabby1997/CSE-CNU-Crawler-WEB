@@ -5,6 +5,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib import messages
 from .models import Profile
 import elearn_crawler as ec
+from passlib.hash import cisco_type7
 
 
 def signup(request):
@@ -20,7 +21,8 @@ def signup(request):
 		else:
 			if password == confirm:
 				user = User.objects.create_user(username=username, password=password)
-				profile = Profile(user=user, portal_id=id_portal, portal_pw=pw_portal)
+				encrypted_portal_pw = cisco_type7.hash(pw_portal)
+				profile = Profile(user=user, portal_id=id_portal, portal_pw=encrypted_portal_pw)
 				profile.save()
 				ec.fetch_and_save(profile)
 				auth.login(request, user)
@@ -61,9 +63,10 @@ def setting(request):
 			profile = Profile.objects.get(user=request.user)
 			if check_password(password_old, user.password):
 				if password == confirm:
+					encrypted_portal_pw = cisco_type7.hash(pw_portal)
 					user.set_password(password)
 					user.save()
-					profile.portal_pw = pw_portal
+					profile.portal_pw = encrypted_portal_pw
 					profile.save()
 					auth.login(request, user)
 				else:

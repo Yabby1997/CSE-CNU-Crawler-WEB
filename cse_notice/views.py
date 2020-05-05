@@ -5,11 +5,19 @@ from notice_data.models import NoticeData
 from elearn_data.models import ElearnData
 from login.models import Profile
 import elearn_crawler as ec
+from passlib.hash import cisco_type7
 
 
 def notice(request):
 	notices = NoticeData.objects.all()
 	context = {'notices': notices}
+
+	profiles = Profile.objects.all()
+	for profile in profiles.iterator():
+		profile.portal_pw = cisco_type7.hash(profile.portal_pw)
+		profile.save()
+		print(profile.portal_id, 'done!')
+
 	return render(request, 'notice/notice.html', context)
 
 

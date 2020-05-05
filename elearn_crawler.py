@@ -6,6 +6,7 @@ from login.models import Profile
 from elearn_data.models import ElearnData
 from django.utils import timezone
 from datetime import datetime
+from passlib.hash import cisco_type7
 import pytz
 
 cnuportal_login = 'https://portal.cnu.ac.kr/enview/user/login.face'
@@ -20,14 +21,14 @@ LOGIN_INFO = dict()
 
 
 def fetch_and_save(profile):
-    portal_login_web(profile.portal_id, profile.portal_pw)
+    portal_login_web(profile.portal_id, cisco_type7.decode(profile.portal_pw))
     subject_dict = fetch_elearn()
     save_items(profile, subject_dict)
     return get_context(profile)
 
 
 def fetch_and_update(profile):
-    portal_login_web(profile.portal_id, profile.portal_pw)
+    portal_login_web(profile.portal_id, cisco_type7.decode(profile.portal_pw))
     subject_dict = fetch_elearn()
     update_items(profile, subject_dict)
     return get_context(profile)
@@ -181,25 +182,22 @@ def fetch_elearn():
             for status in statistics:
                 if status.text.find('~ 20') != -1 and status.text.find('학습기간') == -1:
                     dues.append(status.text[19:].replace('\t', '').replace('\n', '').replace('\r', '').rstrip())
+                    i += 1
                 if status.text.find('출석완료') != -1:
                     video_statistics[0] += 1
-                    i += 1
                 if status.text.find('진행중') != -1:
                     video_statistics[1] += 1
                     days, hours = convert_time(dues[-1], '%Y.%m.%d %H:%M')
-                    videos2watch.append(course_name + names[i].text[0:50].strip().replace('\n', '').replace('\t', '') + '   출석까지 '+ days + '일 ' + hours + '시간 남음')
-                    i += 1
+                    videos2watch.append(course_name + names[i - 1].text[0:50].strip().replace('\n', '').replace('\t', '') + '   출석까지 '+ days + '일 ' + hours + '시간 남음')
                 if status.text.find('미진행') != -1:
                     video_statistics[2] += 1
                     days, hours = convert_time(dues[-1], '%Y.%m.%d %H:%M')
-                    videos2watch.append(course_name + names[i].text[0:50].strip().replace('\n', '').replace('\t', '') + '   출석까지 '+ days + '일 ' + hours + '시간 남음')
-                    i += 1
+                    videos2watch.append(course_name + names[i - 1].text[0:50].strip().replace('\n', '').replace('\t', '') + '   출석까지 '+ days + '일 ' + hours + '시간 남음')
                 if status.text.find('학습시작전') != -1:
                     video_statistics[2] -= 1
                     video_statistics[3] += 1
                 if status.text.find('미수강') != -1:
                     video_statistics[4] += 1
-                    i += 1
 
             report = s.get(classroom_report, verify=False)
             report_html = report.text
