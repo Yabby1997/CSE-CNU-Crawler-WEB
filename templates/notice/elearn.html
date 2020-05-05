@@ -10,13 +10,13 @@
 </head>
 <body>
 <div class="container">
-    <h1>{{profile.portal_id}}</h1>
-    <h3>{{profile.last_update}}</h3>
-    <div style='width:80px;float: right;'>
-        <input type="submit" class="btn btn-primary" value="Refresh">
-    </div>
+    <h1>{{user.username}}</h1>
+    <h3>{{elearn.profile.last_update}}</h3>
     <form method="POST" action="{% url 'elearn'%}">
         {% csrf_token %}
+        <div style='width:80px;float: right;'>
+            <input type="submit" class="btn btn-primary" value="Refresh">
+        </div>
         <div>
             <a href="{% url 'setting' %}" class="txt1">비번변경</a>
         </div>
@@ -39,7 +39,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for class in classes %}
+            {% for class in elearn.classes %}
             <tr>
                 <td>{{class.title}}</td>
                 <td>{{class.percentage}}</td>
@@ -61,7 +61,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for video in videos %}
+            {% for video in elearn.videos %}
             <tr>
                 <td>{{video}}</td>
             </tr>
@@ -75,7 +75,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for report in reports %}
+            {% for report in elearn.reports %}
             <tr>
                 <td>{{report}}</td>
             </tr>

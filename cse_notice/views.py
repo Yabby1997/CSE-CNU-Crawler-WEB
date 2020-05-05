@@ -23,7 +23,7 @@ def notice(request):
 
 def elearn(request):
 	profile = Profile.objects.get(user=request.user)
-	context = ec.get_context(profile)
+	context = {'user': request.user, 'elearn': ec.get_context(profile)}
 	if request.method == "POST":
-		context = ec.fetch_and_update(profile)
+		context['elearn'] = ec.fetch_and_update(profile)
 	return render(request, 'notice/elearn.html', context)

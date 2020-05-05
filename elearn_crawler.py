@@ -21,14 +21,14 @@ LOGIN_INFO = dict()
 
 
 def fetch_and_save(profile):
-    portal_login_web(profile.portal_id, cisco_type7.decode(profile.portal_pw))
+    portal_login_web(profile.portal_id, profile.portal_pw)
     subject_dict = fetch_elearn()
     save_items(profile, subject_dict)
     return get_context(profile)
 
 
 def fetch_and_update(profile):
-    portal_login_web(profile.portal_id, cisco_type7.decode(profile.portal_pw))
+    portal_login_web(profile.portal_id, profile.portal_pw)
     subject_dict = fetch_elearn()
     update_items(profile, subject_dict)
     return get_context(profile)
@@ -65,7 +65,7 @@ def fetch_and_show():
 
 def portal_login_web(id_portal, pw_portal):
     LOGIN_INFO['userId'] = id_portal
-    LOGIN_INFO['password'] = pw_portal
+    LOGIN_INFO['password'] = cisco_type7.decode(pw_portal)
 
 
 def portal_login_terminal():
