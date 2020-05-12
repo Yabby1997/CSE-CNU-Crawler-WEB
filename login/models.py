@@ -7,6 +7,6 @@ from django.utils import timezone
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    portal_id = models.CharField()
+    portal_id = models.CharField(max_length=30)
     portal_pw = models.CharField(max_length=300)
     last_update = models.DateTimeField(default=timezone.now)
