@@ -8,6 +8,7 @@ urlpatterns = [
     path('elearn/', notices.elearn, name='elearn'),
 	path('notice/', notices.notice, name='notice'),
     path('login/', login_page.login, name='login'),
+    path('logout/', login_page.logout, name='logout'),
     path('signup/', login_page.signup, name='signup'),
     path('setting/', login_page.setting, name='setting'),
 ]

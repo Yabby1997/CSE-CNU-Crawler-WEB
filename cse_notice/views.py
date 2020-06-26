@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 from notice_data.models import NoticeData
@@ -16,8 +16,12 @@ def notice(request):
 
 
 def elearn(request):
-	profile = Profile.objects.get(user=request.user)
-	context = {'user': request.user, 'elearn': ec.get_context(profile)}
-	if request.method == "POST":
-		context['elearn'] = ec.fetch_and_update(profile)
-	return render(request, 'notice/elearn.html', context)
+	if request.user.is_authenticated :
+		profile = Profile.objects.get(user=request.user)
+		context = {'user': request.user, 'elearn': ec.get_context(profile)}
+		if request.method == "POST":
+			context['elearn'] = ec.fetch_and_update(profile)
+		return render(request, 'notice/elearn.html', context)
+
+	else:
+		return redirect('login')

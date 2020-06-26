@@ -31,45 +31,58 @@ def signup(request):
 
 
 def login(request):
-	if request.method == "POST":
-		username = request.POST['username']
-		password = request.POST['password']
+	if request.user.is_authenticated :
+		return redirect('elearn')
 
-		if not (username and password):
-			return render(request, 'login/login.html')
-		else:
-			user = auth.authenticate(request, username=username, password=password)
-			if user is not None:
-				auth.login(request, user)
-				return redirect('elearn')
-			else:
-				return render(request, 'login/login.html')
 	else:
-		return render(request, 'login/login.html')
+		if request.method == "POST":
+			username = request.POST['username']
+			password = request.POST['password']
 
-
-def setting(request):
-	if request.method == "POST":
-		password_old = request.POST['password_old']
-		password = request.POST['password']
-		confirm = request.POST['pw_confirm']
-		pw_portal = request.POST['pw_portal']
-
-		if not (password_old and password and confirm):
-			return render(request, 'login/setting.html')
-		else:
-			user = request.user
-			profile = Profile.objects.get(user=request.user)
-			if check_password(password_old, user.password):
-				if password == confirm:
-					user.set_password(password)
-					user.save()
-					profile.portal_pw = cisco_type7.hash(pw_portal)
-					profile.save()
-					ec.clear_items(profile)
-					ec.fetch_and_save(profile)
+			if not (username and password):
+				return render(request, 'login/login.html')
+			else:
+				user = auth.authenticate(request, username=username, password=password)
+				if user is not None:
 					auth.login(request, user)
 					return redirect('elearn')
 				else:
-					return render(request, 'login/setting.html')
-	return render(request, 'login/setting.html')
+					return render(request, 'login/login.html')
+		else:
+			return render(request, 'login/login.html')
+
+
+def logout(request):
+	auth.logout(request)
+	return redirect('login')
+
+
+def setting(request):
+	if request.user.is_authenticated:
+		if request.method == "POST":
+			password_old = request.POST['password_old']
+			password = request.POST['password']
+			confirm = request.POST['pw_confirm']
+			pw_portal = request.POST['pw_portal']
+
+			if not (password_old and password and confirm):
+				return render(request, 'login/setting.html')
+			else:
+				user = request.user
+				profile = Profile.objects.get(user=request.user)
+				if check_password(password_old, user.password):
+					if password == confirm:
+						user.set_password(password)
+						user.save()
+						profile.portal_pw = cisco_type7.hash(pw_portal)
+						profile.save()
+						ec.clear_items(profile)
+						ec.fetch_and_save(profile)
+						auth.login(request, user)
+						return redirect('elearn')
+					else:
+						return render(request, 'login/setting.html')
+		return render(request, 'login/setting.html')
+
+	else:
+		return redirect('login')

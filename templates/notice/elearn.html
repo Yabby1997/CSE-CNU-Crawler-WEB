@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="container">
-    <h1>{{user.username}}</h1>
+    <h1>{{user.username}}</h1> 
     <h3>{{elearn.profile.last_update}}</h3>
     <form method="POST" action="{% url 'elearn'%}">
         {% csrf_token %}
@@ -18,10 +18,10 @@
             <input type="submit" class="btn btn-primary" value="Refresh">
         </div>
         <div>
-            <a href="{% url 'setting' %}" class="txt1">비번변경</a>
-        </div>
-        <div>
-            <a href="https://github.com/Yabby1997/CNU-CSE-Crawler-WEB" class="txt1">⭐💫✨</a>
+            <a href="{% url 'setting' %}" class="txt1">🛠계정설정</a>
+            <a href="{% url 'logout' %}" class="txt1">👋로그아웃</a>
+            <a href="https://open.kakao.com/o/sLFynyic" class="txt1">👾버그리포트</a>
+            <a href="https://github.com/Yabby1997/CNU-CSE-Crawler-WEB" class="txt1">👨‍💻GitHub</a>
         </div>
     </form>
     <table class="table table-striped">
