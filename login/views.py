@@ -16,7 +16,7 @@ def signup(request):
 		id_portal = request.POST['id_portal']
 		pw_portal = request.POST['pw_portal']
 
-		if not (username and password and confirm and id_portal and pw_portal):
+		if not (username and password and confirm and id_portal and pw_portal) or User.objects.filter(username=username).exists():
 			return render(request, 'login/signup.html')
 		else:
 			if password == confirm:
@@ -26,13 +26,13 @@ def signup(request):
 				profile.save()
 				ec.fetch_and_save(profile)
 				auth.login(request, user)
-				return redirect('elearn')
+				return redirect('mainpage')
 	return render(request, 'login/signup.html')
 
 
 def login(request):
 	if request.user.is_authenticated :
-		return redirect('elearn')
+		return redirect('mainpage')
 
 	else:
 		if request.method == "POST":
@@ -45,7 +45,7 @@ def login(request):
 				user = auth.authenticate(request, username=username, password=password)
 				if user is not None:
 					auth.login(request, user)
-					return redirect('elearn')
+					return redirect('mainpage')
 				else:
 					return render(request, 'login/login.html')
 		else:
@@ -79,7 +79,7 @@ def setting(request):
 						ec.clear_items(profile)
 						ec.fetch_and_save(profile)
 						auth.login(request, user)
-						return redirect('elearn')
+						return redirect('mainpage')
 					else:
 						return render(request, 'login/setting.html')
 		return render(request, 'login/setting.html')

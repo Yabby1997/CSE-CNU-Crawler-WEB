@@ -1,101 +1,149 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
-<head>
-	<title>Setting</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="icon" type="image/png" href='% static "login/images/icons/favicon.ico"/ %}'>
-	<link rel="stylesheet" type="text/css" href='{% static "login/vendor/bootstrap/css/bootstrap.min.css" %}'>
-	<link rel="stylesheet" type="text/css" href='{% static "flogin/onts/font-awesome-4.7.0/css/font-awesome.min.css" %}'>
-	<link rel="stylesheet" type="text/css" href='{% static "login/fonts/Linearicons-Free-v1.0.0/icon-font.min.css" %}'>
-	<link rel="stylesheet" type="text/css" href='{% static "login/vendor/animate/animate.css" %}'>
-	<link rel="stylesheet" type="text/css" href='{% static "login/vendor/css-hamburgers/hamburgers.min.css" %}'>
-	<link rel="stylesheet" type="text/css" href='{% static "login/vendor/animsition/css/animsition.min.css" %}'>
-	<link rel="stylesheet" type="text/css" href='{% static "login/vendor/select2/select2.min.css" %}'>
-	<link rel="stylesheet" type="text/css" href='{% static "login/vendor/daterangepicker/daterangepicker.css" %}'>
-	<link rel="stylesheet" type="text/css" href='{% static "login/css/util.css" %}'>
-	<link rel="stylesheet" type="text/css" href='{% static "login/css/main.css" %}'>
+<html>
 
-	<script>	
-		function signin(){
-			if($("#password_old").val().length==0){ alert("기존 비밀번호를 입력하세요."); $("#password_old").focus(); return false; }
-			if($("#password").val().length==0){ alert("바꿀 비밀번호를 입력하세요."); $("#password").focus(); return false; }
-			if($("#pw_confirm").val().length==0){ alert("확인을 위해 바꿀 비밀번호를 한번 더 입력하세요."); $("pw_confirm").focus(); return false; }
-			if($("#pw_portal").val().length==0){ alert("바꿀 포탈 비밀번호를 입력하세요."); $("pw_portal").focus(); return false; }
-			else{changeForm.submit();}
-		}
-	</script>
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="{% static 'login/css/all.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'login/css/login.css' %}" rel="stylesheet" type="text/css">
+
+    <script>
+        function signin() {
+            if ($("#password_old").val().length == 0) {
+                alert("기존 비밀번호를 입력하세요.");
+                $("#password_old").focus();
+                return false;
+            }
+            if ($("#password").val().length == 0) {
+                alert("바꿀 비밀번호를 입력하세요.");
+                $("#password").focus();
+                return false;
+            }
+            if ($("#pw_confirm").val().length == 0) {
+                alert("확인을 위해 바꿀 비밀번호를 한번 더 입력하세요.");
+                $("pw_confirm").focus();
+                return false;
+            }
+            if ($("#pw_portal").val().length == 0) {
+                alert("바꿀 포탈 비밀번호를 입력하세요.");
+                $("pw_portal").focus();
+                return false;
+            } else {
+                changeForm.submit();
+            }
+        }
+    </script>
 
 </head>
+
 <body>
-	
-	<div class="limiter">
-		<div class="container-login100">
-			<div class="wrap-login100 p-t-50 p-b-90">
-				<form name=changeForm method="POST" action="{% url 'setting'%}">
-					{% csrf_token %}
-					<span class="login100-form-title p-b-51">
-						CNU Crawler
-					</span>
-					<span class="login100-form-title p-b-51">
-						Settings
-					</span>
+    <style>
+        article {
+            height: -webkit-calc(80%);
+            height: -moz-calc(80%);
+            height: calc(80%);
+        }
+    </style>
+    <header style="height:20%;">
+        <div class="nav_holder"></div>
+    </header>
 
-					<span class="txt1">
-						설정을 위해 기존 비밀번호를 확인해주세요.
-					</span>
+    <article>
+        <div class="login_wrap">
+            <div class="login_title">
+                CNU 크롤러
+            </div>
+            <div class="limiter">
+                <div class="container-login100">
+                    <div class="wrap-login100 p-t-50 p-b-90">
+                        <form name=changeForm method="POST" action="{% url 'setting'%}">
+                            {% csrf_token %}
+                            <div class="wrap-input100 validate-input m-b-16" data-validate="Old password is required">
+                                <input class="input100" type="password" id="password_old" name="password_old" placeholder="기존 비밀번호 확인">
+                            </div>
+                            <div class="wrap-input100 validate-input m-b-16" data-validate="New password is required">
+                                <input class="input100" type="password" id="password" name="password" placeholder="바꿀 비밀번호 (바꾸지 않으면 동일하게)">
+                            </div>
+                            <div class="wrap-input100 validate-input m-b-16" data-validate="Confirm password is required">
+                                <input class="input100" type="password" id="pw_confirm" name="pw_confirm" placeholder="바꿀 비밀번호 확인">
+                            </div>
+                            <div class="wrap-input100 validate-input m-b-16" data-validate="Confirm password is required">
+                                <input class="input100" type="password" id="pw_portal" name="pw_portal" placeholder="바꿀 포탈 비밀번호 (바꾸지 않으면 동일하게)">
+                            </div>
+                            <div class="wrap-input100 validate-input m-b-16" data-validate="Password for portal is required">
+                                <input type="password" id="pw_portal" name="pw_portal" placeholder="포탈 PW를 입력해주세요.">
+                            </div>
+                            <div class="container-login100-form-btn m-t-17">
+                                <button type="button" onclick="signin()" class="refresh_btn login100-form-btn submit_btn">
+                                    바꾸기!
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <div class="loading_box">
+                <div class="loading_window">
+                    <div class="loading_text">Loading</div>
+                    <div class="long_time_text">지연되고 있습니다. 잠시만 기다려주세요.</div>
+                </div>
+            </div>
+    </article>
+    <script src='{% static "login/vendor/jquery/jquery-3.2.1.min.js" %}'></script>
+    <script src='{% static "login/vendor/animsition/js/animsition.min.js" %}'></script>
+    <script src='{% static "login/vendor/bootstrap/js/popper.js" %}'></script>
+    <script src='{% static "login/vendor/bootstrap/js/bootstrap.min.js" %}'></script>
+    <script src='{% static "login/vendor/select2/select2.min.js" %}'></script>
+    <script src='{% static "login/vendor/daterangepicker/moment.min.js" %}'></script>
+    <script src='{% static "login/vendor/daterangepicker/daterangepicker.js" %}'></script>
+    <script src='{% static "login/vendor/countdowntime/countdowntime.js" %}'></script>
+    <script src='{% static "login/js/main.js" %}'></script>
 
-					<div class="wrap-input100 validate-input m-b-16" data-validate = "Old password is required">
-						<input class="input100" type="password" id="password_old" name="password_old" placeholder="기존 비밀번호 확인">
-						<span class="focus-input100"></span>
-					</div>
+    <script>
+        const refresh_btn = document.querySelector(".refresh_btn");
 
-					<span class="txt1">
-						변경할 비밀번호를 입력하고 다시한번 확인해주세요.
-					</span>
+        function loading() {
+            const loading_text = document.querySelector(".loading_text");
+            const long_time_text = document.querySelector(".long_time_text");
+            let i = 0;
+            let dot = ".";
+            let text = "Loading";
+            let time = 0;
 
-					<div class="wrap-input100 validate-input m-b-16" data-validate = "New password is required">
-						<input class="input100" type="password" id="password" name="password" placeholder="바꿀 비밀번호">
-						<span class="focus-input100"></span>
-					</div>
+            setInterval(function() {
+                if (i !== 4) {
+                    i++;
+                } else {
+                    i = 0;
+                }
+                let printText = text;
+                for (k = 0; k < i; k++) {
+                    printText = printText + dot;
+                }
 
-					<div class="wrap-input100 validate-input m-b-16" data-validate = "Confirm password is required">
-						<input class="input100" type="password" id="pw_confirm" name="pw_confirm" placeholder="바꿀 비밀번호 확인">
-						<span class="focus-input100"></span>
-					</div>
+                loading_text.innerText = printText;
+            }, 700);
 
-					<span class="txt1">
-						변경된 portal.cnu.ac.kr의 비밀번호를 입력해주세요.
-					</span>
+            setInterval(function() {
+                if (time !== 20) {
+                    time++;
+                } else {
+                    long_time_text.style.display = "block";
+                }
+            }, 1000)
+        }
 
-					<div class="wrap-input100 validate-input m-b-16" data-validate = "Confirm password is required">
-						<input class="input100" type="password" id="pw_portal" name="pw_portal" placeholder="바꿀 포탈 비밀번호">
-						<span class="focus-input100"></span>
-					</div>
+        function refresh_btn_handler() {
+            refresh_btn.addEventListener("click", function(e) {
+                document.querySelector(".loading_box").style.display = "flex";
+                loading();
+            });
+        }
 
-					<div class="container-login100-form-btn m-t-17">
-						<button type="button" onclick="signin()" class="login100-form-btn">
-							바꾸기!
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-	
-
-	<div id="dropDownSelect1"></div>
-	
-	<script src='{% static "login/vendor/jquery/jquery-3.2.1.min.js" %}'></script>
-	<script src='{% static "login/vendor/animsition/js/animsition.min.js" %}'></script>
-	<script src='{% static "login/vendor/bootstrap/js/popper.js" %}'></script>
-	<script src='{% static "login/vendor/bootstrap/js/bootstrap.min.js" %}'></script>
-	<script src='{% static "login/vendor/select2/select2.min.js" %}'></script>
-	<script src='{% static "login/vendor/daterangepicker/moment.min.js" %}'></script>
-	<script src='{% static "login/vendor/daterangepicker/daterangepicker.js" %}'></script>
-	<script src='{% static "login/vendor/countdowntime/countdowntime.js" %}'></script>
-	<script src='{% static "login/js/main.js" %}'></script>
-
+        refresh_btn_handler();
+    </script>
 </body>
+
 </html>

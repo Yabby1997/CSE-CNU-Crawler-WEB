@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="{% static 'login/css/all.css' %}" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+    <style>
+        .table_scroll {
+            overflow-x: scroll;
+        }
+        
+        @media only screen and (min-width: 995px) {
+            .table_scroll {
+                -ms-overflow-style: none;
+                /* IE and Edge */
+                scrollbar-width: none;
+                /* Firefox */
+            }
+            .table_scroll::-webkit-scrollbar {
+                display: none;
+                /* Chrome, Safari, Opera*/
+            }
+        }
+    </style>
+    <header>
+        <div class="nav_holder">
+            <div class="wrap">
+                <div class="logo col-3 col-s-3">
+                    <a href="{% url 'mainpage' %}">CNU 크롤러</a>
+                </div>
+                <div class="menu_btn">
+                    <span class="material-icons">
+                        reorder
+                    </span>
+                </div>
+                <div class="menu_holder hide">
+                    <div class="menu_title">
+                        메뉴
+                    </div>
+                    <div class="menu">
+                        <ul>
+                            <li><a class="not_current " href="{% url 'videos' %}">강의목록</a></li>
+                            <li><a class="not_current " href="{% url 'reports' %}">과제목록</a></li>
+                            <li><a class="not_current " href="{% url 'notices' %}">강의공지</a></li>
+                            <li><a class="not_current " href="{% url 'materials' %}">자료실</a></li>
+                            <li><a class="current_link" href="{% url 'csenotices' %}">학과공지</a></li>
+                            <li><a class="not_current " href="{% url 'setting' %}">회원정보</a></li>
+                            <li><a class="not_current " href="{% url 'logout' %}">로그아웃</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tab_holder col-6 col-s-6">
+                    <ul>
+                        <li><a class="not_current " href="{% url 'videos' %}">강의목록</a></li>
+                        <li><a class="not_current " href="{% url 'reports' %}">과제목록</a></li>
+                        <li><a class="not_current " href="{% url 'notices' %}">강의공지</a></li>
+                        <li><a class="not_current " href="{% url 'materials' %}">자료실</a></li>
+                        <li><a class="current_link" href="{% url 'csenotices' %}">학과공지</a></li>
+                    </ul>
+                </div>
+                <div class="login_holder col-3 col-s-3">
+                    <a href="{% url 'setting' %}" class="txt1" style="margin-right:10px;">회원정보</a>
+                    <a href="{% url 'logout' %}" class="txt1">로그아웃</a>
+                </div>
+            </div>
+        </div>
+        <div class="header_holder">
+            <div class="wrap">
+                <div class="main_header ">
+                    <span style="padding:0;"></span><br>
+                    <span style="padding:0;"></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <article>
+        <div class="wrap" style="padding-top:20px;padding-bottom:20px;">
+            <div class="content">
+                <div class="content_title">
+                    <h1>학과공지</h1>
+                    <form method="POST" action="{% url 'csenotices'%}" style="display:inline;margin-right:10px;">
+                        {% csrf_token %}
+                        <label class="refresh_btn" for="refresh">⟳
+                        </label>
+                        <input id="refresh" type="submit" class="btn btn-primary" value="Refresh">
+                    </form>
+                    <h2>30일 이내 결과만 출력됩니다.</h2>
+                </div>
+                <div class="content_table table_scroll">
+                    <table class="col-8 col-s-8" style="margin:0 auto;min-width:915px;">
+                        <tr>
+                            <th style="width:10%">공지 시간</th>
+                            <th style="width:10%">공지 타입</th>
+                            <th style="width:80%">공지 링크</th>
+                        </tr>
+                        {% for notice in notices.all|dictsortreversed:"date" %}
+                        <tr>
+                            <td>{{notice.date}}</td>
+                            <td>{{notice.type}}</td>
+                            <td><a style="color:#000000;" href={{notice.link}}>{{notice.title}}</a></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="loading_box">
+            <div class="loading_window">
+                <div class="loading_text">Loading</div>
+                <div class="long_time_text">지연되고 있습니다. 잠시만 기다려주세요.</div>
+            </div>
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="footer_holder">
+            <div class="wrap">
+                <div class="main_footer ">
+                    유권희 신희강 양승훈 정성철<br> 34134 대전광역시 유성구 대학로 99 충남대학교 컴퓨터공학과<br> Copyright (C) 2020 CNU All Rights Reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'login/js/all.js' %}"></script>
+</body>
+
+</html>

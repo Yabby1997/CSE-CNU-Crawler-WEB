@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import mimetypes
+
+mimetypes.add_type("text/css", ".css", True)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,7 +26,7 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 SECRET_KEY = ')(nx_8ur^7mrri#t4_b09i^nrp$@z5g(qug+=t3^2)xc1i6=d)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
 
 ALLOWED_HOSTS = [
 	'yabbyark.iptime.org',
@@ -126,10 +129,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
-
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
-
-STATICFILES_DIR = [
-    STATIC_DIR,
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [ 
+    STATIC_DIR, 
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, '.static_root')

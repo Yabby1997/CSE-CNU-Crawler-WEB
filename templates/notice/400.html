@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="{% static 'login/css/all.css' %}" rel="stylesheet" type="text/css">
+</head>
+
+<body style="height:100vh;">
+    <div class="error_container">
+        <div class="error_box">
+            <ul>
+                <li style="font-size:80px; font-weight:600; margin-top:0;">400</li>
+                <li style="display:flex;flex-direction: column;align-items: center;">
+                    <div style="font-size:20px;">페이지에 문제가 발생했습니다.</div>
+                    <div style="font-size:20px;">관리자에게 문의 부탁드립니다.</div>
+                </li>
+                <li><a href="{% url 'mainpage' %}"><button class="home_btn">홈으로 이동</button></a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>

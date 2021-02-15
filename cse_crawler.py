@@ -1,28 +1,28 @@
-from django.http import HttpResponse, JsonResponse
-import re
-
+import django
+import time
 import requests
-from bs4 import BeautifulSoup
+import re
 import os
+from django.http import HttpResponse, JsonResponse
+from bs4 import BeautifulSoup
+from notice_data.models import NoticeData
+from time_handler import time_validation
+import concurrent.futures   
+from concurrent.futures import ThreadPoolExecutor
+
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', "csecrawler.settings")
-import django
-
 django.setup()
 
-from notice_data.models import NoticeData
+cse_base = 'https://computer.cnu.ac.kr/computer/notice'
 
-notice_base = 'https://computer.cnu.ac.kr/computer/notice'
-
-notice_bachelor = '/bachelor.do'
-notice_normal = '/notice.do'
-notice_project = '/project.do'
-notice_job = '/job.do'
-
+bachelor_notice = '/bachelor.do'
+normal_notice = '/notice.do'
+project_notice = '/project.do'
+job_notice = '/job.do'
 notice_board = '?mode=list&&articleLimit=10&article.offset='
 
 notice_selector = 'tr > td.b-td-left > div > a'
-
 
 def fetch_cse_notices(category):
     notice_dict = dict()
@@ -30,7 +30,7 @@ def fetch_cse_notices(category):
 
     for i in range(3):
         offset = 10 * i
-        req = requests.get(notice_base + category + notice_board + str(offset))
+        req = requests.get(cse_base + category + notice_board + str(offset))
         html = req.text
         soup = BeautifulSoup(html, 'html.parser')
         notices = soup.select(notice_selector)
@@ -40,7 +40,7 @@ def fetch_cse_notices(category):
 
         for notice in notices:
             notice_post = notice.get('href')
-            notice_link = notice_base + category + notice_post
+            notice_link = cse_base + category + notice_post
 
             req = requests.get(notice_link)
             html = req.text
@@ -60,16 +60,17 @@ def fetch_cse_notices(category):
             else:
                 notice_number += '11'
 
-            notice_dict[notice_index] = {
-                'link': notice_link,
-                'type': notice_type,
-                'date': notice_date,
-                'title': notice_title,
-                'number': notice_number,
-            }
-            notice_index += 1
-
-    return notice_dict
+            if time_validation(notice_date, '%Y.%m.%d', 30):
+                notice_dict[notice_index] = {
+                    'link': notice_link,
+                    'type': notice_type,
+                    'date': notice_date,
+                    'title': notice_title,
+                    'number': notice_number,
+                }
+                notice_index += 1
+    
+    return add_new_items(notice_dict)
 
 
 def add_new_items(crawled_data):
@@ -86,12 +87,19 @@ def add_new_items(crawled_data):
 
 
 def fetch_and_save():
-    normal = fetch_cse_notices(notice_normal)
-    bachelor = fetch_cse_notices(notice_bachelor)
-    project = fetch_cse_notices(notice_project)
-    print('notice data fetched')
-    new_count = add_new_items(normal) + add_new_items(bachelor) + add_new_items(project)  # + add_new_items(job)
+    start_time = time.time()
+
+    thread_list = []
+    new_count = 0
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        for each in [normal_notice, bachelor_notice, project_notice]:
+            thread_list.append(executor.submit(fetch_cse_notices, each))
+
+        for future in concurrent.futures.as_completed(thread_list):
+            new_count += future.result()
+
     print(new_count, 'new notice data successfully saved!')
+    print("[TIME] CSE FETCH AND SAVE TIME : %s sec" %(time.time() - start_time))
 
 
 if __name__ == '__main__':
